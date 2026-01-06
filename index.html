@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BaseViber | On-Chain Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -14,139 +14,181 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
         :root { --base-blue: #0052ff; --dark-bg: #020617; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--dark-bg); color: white; scroll-behavior: smooth; }
         
-        /* Solvior-style UI Elements */
-        .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); border-radius: 2.5rem; transition: 0.4s ease; }
-        .glass-card:hover { border-color: var(--base-blue); }
-        
-        .hero-gradient { background: linear-gradient(to right, #ffffff, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--dark-bg); 
+            color: white; 
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
 
-        /* INPUTS: High Visibility (Black text on Light background) */
-        input, textarea { background: #f8fafc !important; color: #000000 !important; border: 1px solid #e2e8f0 !important; font-weight: 600; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--base-blue) !important; box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.1); }
-        input::placeholder { color: #94a3b8; }
+        /* Responsive Fixes */
+        .container-custom { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-        /* ID Card for Export */
-        #idCardExport { width: 400px; height: 240px; background: linear-gradient(135deg, #0052ff 0%, #002a85 100%); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
-        .pfp-circle { width: 64px; height: 64px; border-radius: 50%; border: 2px solid white; object-fit: cover; background: #000; }
-        
+        /* Solvior UI Elements */
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.02); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(20px); 
+            border-radius: 2rem; 
+            height: 100%;
+        }
+
+        input, textarea { 
+            background: #ffffff !important; 
+            color: #000000 !important; 
+            border: 1px solid #e2e8f0 !important; 
+            font-weight: 600;
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        /* ID Card Export Styling */
+        #idCardExport { 
+            width: 350px; 
+            height: 220px; 
+            background: linear-gradient(135deg, #0052ff 0%, #002a85 100%); 
+            border-radius: 20px; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .pfp-circle { width: 55px; height: 55px; border-radius: 50%; border: 2px solid white; object-fit: cover; background: #000; }
+
         /* Based Bubble Animation */
-        @keyframes popUp { 0% { opacity: 0; transform: translateY(0) scale(0.5); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-150px) scale(1.2); } }
-        .based-bubble { position: absolute; pointer-events: none; background: var(--base-blue); color: white; padding: 8px 16px; border-radius: 50px; font-weight: 800; animation: popUp 1.2s ease-out forwards; z-index: 100; box-shadow: 0 10px 20px rgba(0, 82, 255, 0.3); }
+        @keyframes popUp { 
+            0% { opacity: 0; transform: translateY(0) scale(0.5); } 
+            20% { opacity: 1; } 
+            100% { opacity: 0; transform: translateY(-120px) scale(1.2); } 
+        }
+        .based-bubble { 
+            position: absolute; 
+            pointer-events: none; 
+            background: var(--base-blue); 
+            color: white; 
+            padding: 6px 14px; 
+            border-radius: 50px; 
+            font-weight: 800; 
+            font-size: 12px;
+            animation: popUp 1s ease-out forwards; 
+            z-index: 100; 
+        }
         .hidden { display: none; }
     </style>
 </head>
-<body class="overflow-x-hidden">
+<body>
 
-    <nav class="flex justify-between items-center px-10 py-8 max-w-7xl mx-auto">
-        <div class="text-2xl font-black tracking-tighter">BASEVIBER<span class="text-blue-600">🔵</span></div>
-        <div class="hidden md:flex gap-10 text-[10px] font-bold uppercase tracking-widest text-gray-500">
-            <a href="#vibe-section" class="hover:text-white transition">AI Agent</a>
-            <a href="#id-section" class="hover:text-white transition">Identity Pass</a>
-        </div>
-        <button class="bg-blue-600 text-white px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest">Connect</button>
+    <nav class="container-custom py-8 flex justify-center md:justify-start">
+        <div class="text-2xl font-black tracking-tighter italic">BASEVIBER<span class="text-blue-600">🔵</span></div>
     </nav>
 
-    <section class="max-w-5xl mx-auto px-6 pt-20 pb-32 text-center">
-        <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-8 hero-gradient">The Hub of <br>Based Intelligence.</h1>
-        <p class="text-gray-400 text-xl max-w-2xl mx-auto font-light leading-relaxed">Scale your on-chain presence with AI-driven sentiment analysis and high-fidelity identity generation.</p>
+    <section class="container-custom text-center pt-10 pb-16">
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6 bg-gradient-to-r from-white to-blue-400 bg-clip-text text-transparent">Scale Your <br>Based Alpha.</h1>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto font-light leading-relaxed">AI Sentiment & Identity Verification for the On-Chain generation.</p>
     </section>
 
-    <main class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 mb-32">
+    <main class="container-custom grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
         
-        <div id="vibe-section" class="glass-card p-10 relative overflow-hidden">
+        <div class="glass-card p-8 relative overflow-hidden flex flex-col">
             <div id="bubble-container" class="absolute inset-0 pointer-events-none"></div>
-            <h2 class="text-3xl font-black mb-2">AI Vibe Agent</h2>
-            <p class="text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-10">Sentiment Analysis Engine</p>
+            <h2 class="text-2xl font-black mb-1">Vibe Agent</h2>
+            <p class="text-blue-500 text-[10px] font-bold uppercase tracking-widest mb-8">Sentiment Engine</p>
 
-            <div class="flex p-1 bg-black/40 rounded-2xl mb-8 border border-white/5 w-fit">
-                <button id="tC" onclick="tab('coin')" class="px-6 py-2 rounded-xl text-[10px] font-bold uppercase bg-blue-600">Memecoin</button>
-                <button id="tP" onclick="tab('post')" class="px-6 py-2 rounded-xl text-[10px] font-bold uppercase text-gray-500">Post</button>
+            <div class="flex p-1 bg-black/40 rounded-xl mb-6 border border-white/5 w-fit">
+                <button id="tC" onclick="tab('coin')" class="px-5 py-2 rounded-lg text-[10px] font-bold uppercase bg-blue-600">Memecoin</button>
+                <button id="tP" onclick="tab('post')" class="px-5 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-500">Post</button>
             </div>
 
             <div id="vInputs" class="space-y-4">
-                <div id="coinGroup" class="grid grid-cols-2 gap-4">
-                    <input id="mName" type="text" placeholder="Token Name" class="p-4 rounded-xl">
-                    <input id="mTick" type="text" placeholder="$Ticker" class="p-4 rounded-xl">
+                <div id="coinGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input id="mName" type="text" placeholder="Token Name">
+                    <input id="mTick" type="text" placeholder="$Ticker">
                 </div>
                 <div id="postGroup" class="hidden">
-                    <textarea id="pText" placeholder="Drop your alpha here..." class="w-full p-4 rounded-xl h-32 resize-none"></textarea>
+                    <textarea id="pText" placeholder="Paste alpha..." class="h-28 resize-none"></textarea>
                 </div>
-                <button onclick="analyzeVibe()" id="vBtn" class="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:brightness-110 transition">Analyze Vibe</button>
+                <button onclick="analyzeVibe()" id="vBtn" class="w-full bg-blue-600 py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:brightness-110 active:scale-95 transition-all mt-4">Analyze Vibe</button>
             </div>
 
-            <div id="vResult" class="hidden mt-12 text-center">
+            <div id="vResult" class="hidden text-center py-10">
                 <div id="vScore" class="text-8xl font-black italic text-blue-600 leading-none">0</div>
-                <p id="vVerdict" class="text-gray-400 italic text-sm mt-6 px-10"></p>
-                <button onclick="location.reload()" class="mt-8 text-[10px] font-bold text-gray-600 uppercase">Reset Engine</button>
+                <p id="vVerdict" class="text-gray-400 italic text-sm mt-6"></p>
+                <button onclick="location.reload()" class="mt-8 text-[10px] font-bold text-gray-600 uppercase border-b border-gray-800">New Scan</button>
             </div>
         </div>
 
-        <div id="id-section" class="glass-card p-10">
-            <h2 class="text-3xl font-black mb-2">Identity Pass</h2>
-            <p class="text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-10">On-Chain Reputation</p>
+        <div class="glass-card p-8">
+            <h2 class="text-2xl font-black mb-1">Identity Pass</h2>
+            <p class="text-blue-500 text-[10px] font-bold uppercase tracking-widest mb-8">Passport to Base</p>
 
-            <div id="idForm" class="space-y-5">
-                <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
-                    <img id="pfpPreview" src="https://via.placeholder.com/64" class="pfp-circle">
-                    <div>
-                        <label class="block text-[8px] font-bold text-gray-500 uppercase mb-1">Upload Photo</label>
-                        <input type="file" id="photoIn" accept="image/*" class="text-[10px] !bg-transparent !border-none !p-0 !text-gray-400">
-                    </div>
+            <div id="idForm" class="space-y-4">
+                <div class="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
+                    <img id="pfpPreview" src="https://via.placeholder.com/55" class="pfp-circle">
+                    <input type="file" id="photoIn" accept="image/*" class="!bg-transparent !border-none text-[10px] file:bg-blue-600 file:border-none file:text-white file:rounded-lg file:px-2 file:py-1">
                 </div>
-                <input id="userName" type="text" placeholder="Display Name" class="p-4 rounded-xl">
-                <input id="wAddr" type="text" placeholder="0x... (Base Wallet Address)" class="p-4 rounded-xl">
-                <button onclick="generateID()" id="gBtn" class="w-full bg-white text-black py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-blue-600 hover:text-white transition">Generate ID</button>
+                <input id="userName" type="text" placeholder="Display Name">
+                <input id="baseUser" type="text" placeholder="BaseApp Username (e.g. @anon)">
+                <input id="wAddr" type="text" placeholder="0x... Wallet Address">
+                <button onclick="generateID()" id="gBtn" class="w-full bg-white text-black py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-blue-600 hover:text-white transition">Generate ID</button>
             </div>
 
-            <div id="idPreviewArea" class="hidden mt-4">
+            <div id="idPreviewArea" class="hidden flex flex-col items-center">
                 <div id="idCardExport">
                     <div class="flex justify-between items-start">
-                        <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-3">
                             <img id="finalPfp" src="" class="pfp-circle">
                             <div>
-                                <div id="finalName" class="font-black text-lg uppercase leading-none">ANON</div>
-                                <div id="finalAddr" class="text-[9px] opacity-70 font-mono mt-1">0x00...00</div>
+                                <div id="finalName" class="font-black text-sm uppercase leading-none">ANON</div>
+                                <div id="finalBase" class="text-[10px] text-blue-200 font-bold mt-1">@username</div>
+                                <div id="finalAddr" class="text-[8px] opacity-60 font-mono">0x00...00</div>
                             </div>
                         </div>
-                        <div class="text-right text-[10px] font-black italic opacity-50">BASEVIBER</div>
+                        <div class="text-[8px] font-black italic opacity-40">BASEVIBER</div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 mt-6">
-                        <div class="bg-white/10 p-3 rounded-xl border border-white/10 text-center">
-                            <div id="finalTx" class="text-xl font-black">0</div>
-                            <div class="text-[8px] uppercase opacity-60">Transactions</div>
+                    <div class="grid grid-cols-2 gap-3 mt-4">
+                        <div class="bg-white/10 p-2 rounded-lg border border-white/5 text-center">
+                            <div id="finalTx" class="text-lg font-black">0</div>
+                            <div class="text-[7px] uppercase opacity-60">Transactions</div>
                         </div>
-                        <div class="bg-white/10 p-3 rounded-xl border border-white/10 text-center">
-                            <div id="finalScore" class="text-xl font-black text-blue-300">0</div>
-                            <div class="text-[8px] uppercase opacity-60">Based Score</div>
+                        <div class="bg-white/10 p-2 rounded-lg border border-white/5 text-center">
+                            <div id="finalScore" class="text-lg font-black text-blue-300">0</div>
+                            <div class="text-[7px] uppercase opacity-60">Based Score</div>
                         </div>
                     </div>
                     <div class="flex justify-between items-end mt-4">
-                        <div class="text-[10px] font-bold uppercase px-3 py-1 bg-white/10 rounded-full border border-white/20" id="finalRank">CITIZEN</div>
-                        <div class="text-[8px] opacity-50 uppercase font-bold">Base Mainnet Verified</div>
+                        <div class="text-[8px] font-bold uppercase px-3 py-1 bg-white/20 rounded-full" id="finalRank">CITIZEN</div>
+                        <div class="text-[7px] opacity-40 font-bold uppercase tracking-tighter">Chain Verified &copy; 2026</div>
                     </div>
                 </div>
-                <button onclick="downloadID()" class="w-full mt-6 flex items-center justify-center gap-3 bg-blue-600/10 border border-blue-500/20 py-4 rounded-xl text-blue-400 font-bold uppercase text-[10px]">
-                    Download Identity PNG
-                </button>
+                <button onclick="downloadID()" class="mt-6 text-blue-400 font-bold uppercase text-[10px] border-b border-blue-900 pb-1">Download Identity Pass</button>
             </div>
         </div>
-
     </main>
+
+    <footer class="container-custom py-16 text-center border-t border-white/5">
+        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em]">Created by <a href="https://x.com/0xdruid" class="text-blue-500 hover:underline">@0xdruid</a></p>
+    </footer>
 
     <script>
         // TAB LOGIC
         function tab(t) {
             const isC = t === 'coin';
-            document.getElementById('tC').className = `px-6 py-2 rounded-xl text-[10px] font-bold uppercase ${isC ? 'bg-blue-600 text-white' : 'text-gray-500'}`;
-            document.getElementById('tP').className = `px-6 py-2 rounded-xl text-[10px] font-bold uppercase ${!isC ? 'bg-blue-600 text-white' : 'text-gray-500'}`;
+            document.getElementById('tC').className = `px-5 py-2 rounded-lg text-[10px] font-bold uppercase ${isC ? 'bg-blue-600 text-white' : 'text-gray-500'}`;
+            document.getElementById('tP').className = `px-5 py-2 rounded-lg text-[10px] font-bold uppercase ${!isC ? 'bg-blue-600 text-white' : 'text-gray-500'}`;
             document.getElementById('coinGroup').classList.toggle('hidden', !isC);
             document.getElementById('postGroup').classList.toggle('hidden', isC);
         }
 
-        // VIBE AGENT LOGIC
+        // VIBE ENGINE
         function analyzeVibe() {
             const isC = !document.getElementById('coinGroup').classList.contains('hidden');
             const n = document.getElementById('mName').value.trim();
@@ -162,28 +204,27 @@
             if(localStorage.getItem(id)) { alert("WEIRDO... ALREADY TRIED THAT 👀🔵"); return; }
             localStorage.setItem(id, "true");
 
-            document.getElementById('vBtn').innerText = "CALCULATING SENTIMENT...";
+            document.getElementById('vBtn').innerText = "VIBE CHECKING...";
             
             setTimeout(() => {
                 document.getElementById('vInputs').classList.add('hidden');
                 document.getElementById('vResult').classList.remove('hidden');
-                document.getElementById('vScore').innerText = Math.floor(Math.random() * 25) + 75;
-                document.getElementById('vVerdict').innerText = "ANALYSIS COMPLETE: High-tier sentiment detected on the Base Layer. Absolute Alpha.";
-                
-                for(let i=0; i<15; i++) setTimeout(spawnBubble, i * 100);
-            }, 1800);
+                document.getElementById('vScore').innerText = Math.floor(Math.random() * 20) + 80;
+                document.getElementById('vVerdict').innerText = "L2 ALPHA CONFIRMED. YOU ARE COOKING.";
+                for(let i=0; i<15; i++) setTimeout(spawnBubble, i * 80);
+            }, 1500);
         }
 
         function spawnBubble() {
             const b = document.createElement('div');
             b.className = 'based-bubble'; b.innerText = 'BASED 🔵';
-            b.style.left = (Math.random() * 80 + 10) + '%';
-            b.style.top = '60%';
+            b.style.left = (Math.random() * 70 + 15) + '%';
+            b.style.top = '70%';
             document.getElementById('bubble-container').appendChild(b);
-            setTimeout(() => b.remove(), 1200);
+            setTimeout(() => b.remove(), 1000);
         }
 
-        // IDENTITY PASS LOGIC
+        // ID LOGIC
         document.getElementById('photoIn').onchange = (e) => {
             const [file] = e.target.files;
             if (file) {
@@ -196,25 +237,26 @@
         async function generateID() {
             const addr = document.getElementById('wAddr').value.trim();
             const name = document.getElementById('userName').value.trim() || "BASED ANON";
+            const buser = document.getElementById('baseUser').value.trim() || "@based";
+            
             if(!addr.startsWith('0x') || addr.length !== 42) { alert("Invalid Address."); return; }
 
             const gBtn = document.getElementById('gBtn');
-            gBtn.innerText = "FETCHING ON-CHAIN DATA...";
-            gBtn.disabled = true;
+            gBtn.innerText = "QUERYING L2...";
 
             try {
                 const txs = await window.client.getTransactionCount({ address: addr });
                 document.getElementById('finalName').innerText = name.toUpperCase();
+                document.getElementById('finalBase').innerText = buser;
                 document.getElementById('finalAddr').innerText = addr.substring(0,6) + "..." + addr.substring(38);
                 document.getElementById('finalTx').innerText = txs;
-                document.getElementById('finalScore').innerText = Math.min(txs + 12, 99);
+                document.getElementById('finalScore').innerText = Math.min(txs + 15, 99);
                 document.getElementById('finalRank').innerText = txs > 100 ? "GIGA BASED" : "CITIZEN";
 
                 document.getElementById('idForm').classList.add('hidden');
                 document.getElementById('idPreviewArea').classList.remove('hidden');
             } catch (err) {
-                alert("RPC Connection Error.");
-                gBtn.disabled = false;
+                alert("Blockchain connection failed.");
                 gBtn.innerText = "Generate ID";
             }
         }
@@ -222,7 +264,7 @@
         function downloadID() {
             html2canvas(document.getElementById('idCardExport'), { backgroundColor: null, scale: 2 }).then(canvas => {
                 const a = document.createElement('a');
-                a.download = 'Based_ID_Pass.png';
+                a.download = 'Based_Passport.png';
                 a.href = canvas.toDataURL("image/png");
                 a.click();
             });
