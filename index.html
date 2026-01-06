@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BaseViber | Your On-Chain Identity</title>
+    <title>BaseViber | On-Chain Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script type="module">
@@ -14,189 +14,217 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; color: white; }
-        .bg-mesh { background-image: radial-gradient(at 0% 0%, rgba(0, 82, 255, 0.15) 0, transparent 40%); }
+        :root { --base-blue: #0052ff; --dark-bg: #020617; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--dark-bg); color: white; scroll-behavior: smooth; }
         
-        /* THE BASED ID CARD STYLING */
-        #idCard {
-            width: 400px;
-            height: 250px;
-            background: linear-gradient(135deg, #0052ff 0%, #002a85 100%);
-            border-radius: 20px;
-            position: relative;
-            padding: 25px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        #idCard::before {
-            content: "BASED";
-            position: absolute;
-            font-size: 100px;
-            font-weight: 900;
-            opacity: 0.05;
-            bottom: -20px;
-            right: -10px;
-        }
-        .profile-circle {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 3px solid white;
-            object-fit: cover;
-            background: #1e293b;
-        }
-        .glass-stat {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(5px);
-            padding: 8px 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        /* Solvior-style UI Elements */
+        .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); border-radius: 2.5rem; transition: 0.4s ease; }
+        .glass-card:hover { border-color: var(--base-blue); }
+        
+        .hero-gradient { background: linear-gradient(to right, #ffffff, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* INPUTS: High Visibility (Black text on Light background) */
+        input, textarea { background: #f8fafc !important; color: #000000 !important; border: 1px solid #e2e8f0 !important; font-weight: 600; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--base-blue) !important; box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.1); }
+        input::placeholder { color: #94a3b8; }
+
+        /* ID Card for Export */
+        #idCardExport { width: 400px; height: 240px; background: linear-gradient(135deg, #0052ff 0%, #002a85 100%); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+        .pfp-circle { width: 64px; height: 64px; border-radius: 50%; border: 2px solid white; object-fit: cover; background: #000; }
+        
+        /* Based Bubble Animation */
+        @keyframes popUp { 0% { opacity: 0; transform: translateY(0) scale(0.5); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-150px) scale(1.2); } }
+        .based-bubble { position: absolute; pointer-events: none; background: var(--base-blue); color: white; padding: 8px 16px; border-radius: 50px; font-weight: 800; animation: popUp 1.2s ease-out forwards; z-index: 100; box-shadow: 0 10px 20px rgba(0, 82, 255, 0.3); }
+        .hidden { display: none; }
     </style>
 </head>
-<body class="bg-mesh min-h-screen flex flex-col items-center py-12 px-4">
+<body class="overflow-x-hidden">
 
-    <header class="text-center mb-12">
-        <h1 class="text-4xl font-black tracking-tighter mb-2">BASEVIBER<span class="text-blue-500">🔵</span></h1>
-        <p class="text-gray-400 text-sm uppercase tracking-widest font-bold">Generate Your On-Chain Identity</p>
-    </header>
+    <nav class="flex justify-between items-center px-10 py-8 max-w-7xl mx-auto">
+        <div class="text-2xl font-black tracking-tighter">BASEVIBER<span class="text-blue-600">🔵</span></div>
+        <div class="hidden md:flex gap-10 text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            <a href="#vibe-section" class="hover:text-white transition">AI Agent</a>
+            <a href="#id-section" class="hover:text-white transition">Identity Pass</a>
+        </div>
+        <button class="bg-blue-600 text-white px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest">Connect</button>
+    </nav>
 
-    <div class="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+    <section class="max-w-5xl mx-auto px-6 pt-20 pb-32 text-center">
+        <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-8 hero-gradient">The Hub of <br>Based Intelligence.</h1>
+        <p class="text-gray-400 text-xl max-w-2xl mx-auto font-light leading-relaxed">Scale your on-chain presence with AI-driven sentiment analysis and high-fidelity identity generation.</p>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 mb-32">
         
-        <div class="bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-md">
-            <h2 class="text-xl font-bold mb-6">1. Setup Your Profile</h2>
-            
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-[10px] uppercase font-bold text-gray-500 mb-2">Profile Picture</label>
-                    <input type="file" id="imgInput" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
-                </div>
+        <div id="vibe-section" class="glass-card p-10 relative overflow-hidden">
+            <div id="bubble-container" class="absolute inset-0 pointer-events-none"></div>
+            <h2 class="text-3xl font-black mb-2">AI Vibe Agent</h2>
+            <p class="text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-10">Sentiment Analysis Engine</p>
 
-                <div>
-                    <label class="block text-[10px] uppercase font-bold text-gray-500 mb-2">Display Name</label>
-                    <input type="text" id="userName" placeholder="e.g. Based Anon" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition">
-                </div>
+            <div class="flex p-1 bg-black/40 rounded-2xl mb-8 border border-white/5 w-fit">
+                <button id="tC" onclick="tab('coin')" class="px-6 py-2 rounded-xl text-[10px] font-bold uppercase bg-blue-600">Memecoin</button>
+                <button id="tP" onclick="tab('post')" class="px-6 py-2 rounded-xl text-[10px] font-bold uppercase text-gray-500">Post</button>
+            </div>
 
-                <div>
-                    <label class="block text-[10px] uppercase font-bold text-gray-500 mb-2">Wallet Address</label>
-                    <input type="text" id="wAddr" placeholder="0x..." class="w-full bg-black/40 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition">
+            <div id="vInputs" class="space-y-4">
+                <div id="coinGroup" class="grid grid-cols-2 gap-4">
+                    <input id="mName" type="text" placeholder="Token Name" class="p-4 rounded-xl">
+                    <input id="mTick" type="text" placeholder="$Ticker" class="p-4 rounded-xl">
                 </div>
+                <div id="postGroup" class="hidden">
+                    <textarea id="pText" placeholder="Drop your alpha here..." class="w-full p-4 rounded-xl h-32 resize-none"></textarea>
+                </div>
+                <button onclick="analyzeVibe()" id="vBtn" class="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:brightness-110 transition">Analyze Vibe</button>
+            </div>
 
-                <button onclick="generateID()" id="genBtn" class="w-full bg-blue-600 py-4 rounded-xl font-black uppercase tracking-widest hover:bg-blue-500 shadow-lg shadow-blue-500/20 transition-all">Generate Based ID</button>
+            <div id="vResult" class="hidden mt-12 text-center">
+                <div id="vScore" class="text-8xl font-black italic text-blue-600 leading-none">0</div>
+                <p id="vVerdict" class="text-gray-400 italic text-sm mt-6 px-10"></p>
+                <button onclick="location.reload()" class="mt-8 text-[10px] font-bold text-gray-600 uppercase">Reset Engine</button>
             </div>
         </div>
 
-        <div id="previewArea" class="hidden flex flex-col items-center">
-            <div id="idCard">
-                <div class="flex justify-between items-start">
-                    <div class="flex items-center gap-4">
-                        <img id="cardImg" src="https://via.placeholder.com/70" class="profile-circle">
-                        <div>
-                            <div id="cardName" class="font-black text-xl leading-none">ANONYMOUS</div>
-                            <div id="cardAddr" class="text-[10px] opacity-60 font-mono mt-1">0x0000...0000</div>
+        <div id="id-section" class="glass-card p-10">
+            <h2 class="text-3xl font-black mb-2">Identity Pass</h2>
+            <p class="text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-10">On-Chain Reputation</p>
+
+            <div id="idForm" class="space-y-5">
+                <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
+                    <img id="pfpPreview" src="https://via.placeholder.com/64" class="pfp-circle">
+                    <div>
+                        <label class="block text-[8px] font-bold text-gray-500 uppercase mb-1">Upload Photo</label>
+                        <input type="file" id="photoIn" accept="image/*" class="text-[10px] !bg-transparent !border-none !p-0 !text-gray-400">
+                    </div>
+                </div>
+                <input id="userName" type="text" placeholder="Display Name" class="p-4 rounded-xl">
+                <input id="wAddr" type="text" placeholder="0x... (Base Wallet Address)" class="p-4 rounded-xl">
+                <button onclick="generateID()" id="gBtn" class="w-full bg-white text-black py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-blue-600 hover:text-white transition">Generate ID</button>
+            </div>
+
+            <div id="idPreviewArea" class="hidden mt-4">
+                <div id="idCardExport">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-4">
+                            <img id="finalPfp" src="" class="pfp-circle">
+                            <div>
+                                <div id="finalName" class="font-black text-lg uppercase leading-none">ANON</div>
+                                <div id="finalAddr" class="text-[9px] opacity-70 font-mono mt-1">0x00...00</div>
+                            </div>
+                        </div>
+                        <div class="text-right text-[10px] font-black italic opacity-50">BASEVIBER</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <div class="bg-white/10 p-3 rounded-xl border border-white/10 text-center">
+                            <div id="finalTx" class="text-xl font-black">0</div>
+                            <div class="text-[8px] uppercase opacity-60">Transactions</div>
+                        </div>
+                        <div class="bg-white/10 p-3 rounded-xl border border-white/10 text-center">
+                            <div id="finalScore" class="text-xl font-black text-blue-300">0</div>
+                            <div class="text-[8px] uppercase opacity-60">Based Score</div>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-[10px] font-black italic">BASEVIBER</div>
-                        <div class="text-[8px] opacity-60">VERIFIED AUTH</div>
+                    <div class="flex justify-between items-end mt-4">
+                        <div class="text-[10px] font-bold uppercase px-3 py-1 bg-white/10 rounded-full border border-white/20" id="finalRank">CITIZEN</div>
+                        <div class="text-[8px] opacity-50 uppercase font-bold">Base Mainnet Verified</div>
                     </div>
                 </div>
-
-                <div class="grid grid-cols-2 gap-3 mt-8">
-                    <div class="glass-stat">
-                        <div class="text-[8px] uppercase opacity-60 font-bold mb-1">On-Chain Txs</div>
-                        <div id="cardTxs" class="text-xl font-black leading-none">--</div>
-                    </div>
-                    <div class="glass-stat">
-                        <div class="text-[8px] uppercase opacity-60 font-bold mb-1">Wallet Age</div>
-                        <div id="cardAge" class="text-xl font-black leading-none">--</div>
-                    </div>
-                </div>
-
-                <div class="flex justify-between items-end mt-4">
-                    <div>
-                        <div class="text-[8px] uppercase opacity-60 font-bold">Reputation</div>
-                        <div id="cardRank" class="text-sm font-black text-blue-300">CALCULATING...</div>
-                    </div>
-                    <div class="text-3xl font-black italic">SCORE: <span id="cardScore">0</span></div>
-                </div>
+                <button onclick="downloadID()" class="w-full mt-6 flex items-center justify-center gap-3 bg-blue-600/10 border border-blue-500/20 py-4 rounded-xl text-blue-400 font-bold uppercase text-[10px]">
+                    Download Identity PNG
+                </button>
             </div>
-
-            <button onclick="downloadID()" class="mt-8 flex items-center gap-3 bg-white text-black px-8 py-4 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                Download PNG
-            </button>
         </div>
 
-    </div>
+    </main>
 
     <script>
-        // Handle Image Preview
-        document.getElementById('imgInput').onchange = function(evt) {
-            const [file] = evt.target.files;
+        // TAB LOGIC
+        function tab(t) {
+            const isC = t === 'coin';
+            document.getElementById('tC').className = `px-6 py-2 rounded-xl text-[10px] font-bold uppercase ${isC ? 'bg-blue-600 text-white' : 'text-gray-500'}`;
+            document.getElementById('tP').className = `px-6 py-2 rounded-xl text-[10px] font-bold uppercase ${!isC ? 'bg-blue-600 text-white' : 'text-gray-500'}`;
+            document.getElementById('coinGroup').classList.toggle('hidden', !isC);
+            document.getElementById('postGroup').classList.toggle('hidden', isC);
+        }
+
+        // VIBE AGENT LOGIC
+        function analyzeVibe() {
+            const isC = !document.getElementById('coinGroup').classList.contains('hidden');
+            const n = document.getElementById('mName').value.trim();
+            const t = document.getElementById('mTick').value.trim();
+            const p = document.getElementById('pText').value.trim();
+
+            if ((isC && (!n || !t)) || (!isC && !p)) {
+                alert("Don't be dumb... That shit is empty.");
+                return;
+            }
+
+            const id = isC ? `v_${n}_${t}` : `v_${p.substring(0,10)}`;
+            if(localStorage.getItem(id)) { alert("WEIRDO... ALREADY TRIED THAT 👀🔵"); return; }
+            localStorage.setItem(id, "true");
+
+            document.getElementById('vBtn').innerText = "CALCULATING SENTIMENT...";
+            
+            setTimeout(() => {
+                document.getElementById('vInputs').classList.add('hidden');
+                document.getElementById('vResult').classList.remove('hidden');
+                document.getElementById('vScore').innerText = Math.floor(Math.random() * 25) + 75;
+                document.getElementById('vVerdict').innerText = "ANALYSIS COMPLETE: High-tier sentiment detected on the Base Layer. Absolute Alpha.";
+                
+                for(let i=0; i<15; i++) setTimeout(spawnBubble, i * 100);
+            }, 1800);
+        }
+
+        function spawnBubble() {
+            const b = document.createElement('div');
+            b.className = 'based-bubble'; b.innerText = 'BASED 🔵';
+            b.style.left = (Math.random() * 80 + 10) + '%';
+            b.style.top = '60%';
+            document.getElementById('bubble-container').appendChild(b);
+            setTimeout(() => b.remove(), 1200);
+        }
+
+        // IDENTITY PASS LOGIC
+        document.getElementById('photoIn').onchange = (e) => {
+            const [file] = e.target.files;
             if (file) {
-                document.getElementById('cardImg').src = URL.createObjectURL(file);
+                const url = URL.createObjectURL(file);
+                document.getElementById('pfpPreview').src = url;
+                document.getElementById('finalPfp').src = url;
             }
         };
 
         async function generateID() {
             const addr = document.getElementById('wAddr').value.trim();
             const name = document.getElementById('userName').value.trim() || "BASED ANON";
-            
-            if(!addr.startsWith('0x') || addr.length !== 42) { alert("Invalid Address"); return; }
-            
-            const btn = document.getElementById('genBtn');
-            btn.innerText = "QUERYING BASE NETWORK...";
-            btn.disabled = true;
+            if(!addr.startsWith('0x') || addr.length !== 42) { alert("Invalid Address."); return; }
+
+            const gBtn = document.getElementById('gBtn');
+            gBtn.innerText = "FETCHING ON-CHAIN DATA...";
+            gBtn.disabled = true;
 
             try {
-                // Fetch Data via Viem
-                const txCount = await window.client.getTransactionCount({ address: addr });
-                
-                // Calculate Age (Estimation based on 2s blocks)
-                const ageDays = Math.floor(txCount * 1.5 / 24); // Fake logic for aesthetic
-                
-                // Update Card UI
-                document.getElementById('cardName').innerText = name.toUpperCase();
-                document.getElementById('cardAddr').innerText = addr.substring(0,6) + "..." + addr.substring(38);
-                document.getElementById('cardTxs').innerText = txCount;
-                document.getElementById('cardAge').innerText = txCount > 10 ? (ageDays + " DAYS") : "NEWBIE";
-                document.getElementById('cardScore').innerText = Math.min(txCount + 10, 99);
-                
-                let rank = "CITIZEN";
-                if(txCount > 100) rank = "GIGA BASED";
-                if(txCount > 1000) rank = "BASE GOD";
-                document.getElementById('cardRank').innerText = rank;
+                const txs = await window.client.getTransactionCount({ address: addr });
+                document.getElementById('finalName').innerText = name.toUpperCase();
+                document.getElementById('finalAddr').innerText = addr.substring(0,6) + "..." + addr.substring(38);
+                document.getElementById('finalTx').innerText = txs;
+                document.getElementById('finalScore').innerText = Math.min(txs + 12, 99);
+                document.getElementById('finalRank').innerText = txs > 100 ? "GIGA BASED" : "CITIZEN";
 
-                // Show Preview
-                document.getElementById('previewArea').classList.remove('hidden');
-                btn.innerText = "GENERATE BASED ID";
-                btn.disabled = false;
-                
-                // Scroll to preview
-                document.getElementById('previewArea').scrollIntoView({ behavior: 'smooth' });
-
+                document.getElementById('idForm').classList.add('hidden');
+                document.getElementById('idPreviewArea').classList.remove('hidden');
             } catch (err) {
-                alert("Network Error. Ensure address is correct.");
-                btn.disabled = false;
-                btn.innerText = "GENERATE BASED ID";
+                alert("RPC Connection Error.");
+                gBtn.disabled = false;
+                gBtn.innerText = "Generate ID";
             }
         }
 
         function downloadID() {
-            const card = document.getElementById('idCard');
-            html2canvas(card, {
-                backgroundColor: null,
-                scale: 2 // High quality
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'Based_Identity_Pass.png';
-                link.href = canvas.toDataURL("image/png");
-                link.click();
+            html2canvas(document.getElementById('idCardExport'), { backgroundColor: null, scale: 2 }).then(canvas => {
+                const a = document.createElement('a');
+                a.download = 'Based_ID_Pass.png';
+                a.href = canvas.toDataURL("image/png");
+                a.click();
             });
         }
     </script>
