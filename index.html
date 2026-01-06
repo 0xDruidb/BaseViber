@@ -3,283 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BaseViber | The On-Chain Vibe Agent</title>
+    <title>BaseViber | Viem On-Chain Agent</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script type="module">
+        import { createPublicClient, http } from 'https://esm.sh/viem';
+        import { base } from 'https://esm.sh/viem/chains';
+
+        // Global Client for Base
+        window.client = createPublicClient({ 
+            chain: base, 
+            transport: http('https://mainnet.base.org') 
+        });
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: white; margin: 0; }
         
-        :root { --base-blue: #0052ff; --bg-dark: #020617; }
-        
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-dark);
-            color: white;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .base-blue { color: #0052ff; }
+        .bg-base { background-color: #0052ff; }
+
+        input, textarea {
+            background: #f8fafc !important;
+            color: #000000 !important;
+            border: 2px solid #0052ff !important;
+            font-weight: 600;
         }
 
-        /* Glassmorphism Styling */
-        .glass {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .base-gradient-text {
-            background: linear-gradient(to right, #ffffff, #0052ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Animated Background Orbs */
-        .orb {
-            position: fixed; width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(0, 82, 255, 0.12) 0%, transparent 70%);
-            z-index: -1; border-radius: 50%; filter: blur(80px);
-        }
-
-        .bento-card { transition: transform 0.3s ease, border-color 0.3s ease; }
-        .bento-card:hover { transform: translateY(-5px); border-color: rgba(0, 82, 255, 0.4); }
-
-        /* Based Bubbles Animation */
         @keyframes bubbleExplosion {
             0% { transform: translateY(0) scale(0.5); opacity: 0; }
             20% { opacity: 1; }
-            100% { transform: translateY(-200px) scale(1.5); opacity: 0; }
+            100% { transform: translateY(-250px) scale(1.5); opacity: 0; }
         }
         .based-bubble {
-            position: absolute; pointer-events: none; background: var(--base-blue); color: white;
-            padding: 8px 16px; border-radius: 50px; font-weight: 800; font-size: 12px;
+            position: absolute; pointer-events: none; background: #0052ff; color: white;
+            padding: 10px 20px; border-radius: 50px; font-weight: 800; font-size: 14px;
             animation: bubbleExplosion 1.2s ease-out forwards; z-index: 100;
-            box-shadow: 0 0 20px rgba(0, 82, 255, 0.5);
         }
-
-        .scan-bar { height: 4px; background: var(--base-blue); transition: width 0.3s; box-shadow: 0 0 15px var(--base-blue); }
         .hidden { display: none; }
     </style>
 </head>
-<body>
+<body class="p-6">
 
-    <div class="orb top-[-10%] left-[-10%]"></div>
-    <div class="orb bottom-[-10%] right-[-10%]"></div>
-
-    <nav class="fixed w-full z-50 px-6 py-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center glass rounded-2xl px-6 py-3">
-            <div class="text-xl font-black tracking-tighter">BASEVIBER<span class="text-blue-600">🔵</span></div>
-            <div class="hidden md:flex gap-8 text-[11px] font-bold uppercase tracking-widest text-gray-400">
-                <a href="#" class="hover:text-blue-500 transition">Terminal</a>
-                <a href="#audit-section" class="hover:text-blue-500 transition">Audit ID</a>
-                <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank" class="text-blue-400">Unlock API</a>
-            </div>
-            <button class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest px-6 py-3 rounded-xl transition-all shadow-lg shadow-blue-900/40">Connect</button>
-        </div>
+    <nav class="max-w-6xl mx-auto flex justify-between items-center mb-12 glass p-5 rounded-2xl">
+        <div class="text-2xl font-black">BASEVIBER<span class="base-blue">🔵</span></div>
+        <div class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Direct Node Connection</div>
     </nav>
 
-    <section class="pt-40 pb-20 px-6 text-center">
-        <div class="max-w-4xl mx-auto">
-            <span class="px-4 py-1 rounded-full border border-blue-500/30 text-blue-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-6 inline-block bg-blue-500/5">On-Chain Intelligence Agent</span>
-            <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-6 base-gradient-text leading-tight">Vibe High. <br>Audit Hard.</h1>
-            <p class="text-gray-400 text-lg mb-10 max-w-2xl mx-auto font-light">The first AI agent built to verify your on-chain reputation and analyze the alpha of your next big basepost.</p>
-        </div>
-    </section>
+    <div id="bubble-container" class="fixed inset-0 pointer-events-none"></div>
 
-    <section class="px-6 py-10 max-w-7xl mx-auto relative">
-        <div id="bubble-container" class="absolute inset-0 pointer-events-none"></div>
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
         
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <div class="lg:col-span-7 glass p-10 rounded-[3rem] bento-card relative">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-black tracking-tight mb-1">Vibe Checker</h2>
-                    <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">Sentiment Analysis Engine</p>
-                </div>
-
-                <div class="flex p-1 bg-black/40 rounded-2xl mb-8 border border-white/5 max-w-xs">
-                    <button id="coinTab" onclick="switchTab('coin')" class="flex-1 py-3 text-[9px] font-bold uppercase tracking-widest rounded-xl transition-all bg-blue-600">Memecoin</button>
-                    <button id="postTab" onclick="switchTab('post')" class="flex-1 py-3 text-[9px] font-bold uppercase tracking-widest rounded-xl transition-all text-gray-500">Post Vibe</button>
-                </div>
-
-                <div id="coinInputs" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <input id="memeName" type="text" placeholder="Meme Name" class="w-full px-6 py-4 rounded-2xl text-sm outline-none">
-                        <input id="memeTicker" type="text" placeholder="$Ticker" class="w-full px-6 py-4 rounded-2xl text-sm outline-none">
-                    </div>
-                </div>
-
-                <div id="postInputs" class="hidden">
-                    <textarea id="postText" placeholder="Drop your alpha here..." class="w-full px-6 py-4 rounded-2xl text-sm h-32 resize-none outline-none"></textarea>
-                </div>
-
-                <button onclick="analyzeVibe()" id="vibeBtn" class="w-full py-5 rounded-2xl bg-blue-600 font-black text-xs uppercase tracking-widest mt-8 hover:brightness-110 active:scale-95 transition-all">Analyze Vibe</button>
-                
-                <div id="vibeScan" class="hidden mt-8">
-                    <div class="flex justify-between text-[10px] font-bold text-blue-400 mb-2 uppercase"><span>Scanning Nodes...</span><span id="vibePercent">0%</span></div>
-                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div id="vibeBar" class="scan-bar w-0"></div></div>
-                </div>
-
-                <div id="vibeResult" class="mt-10 text-center min-h-[140px]">
-                    <div id="vScore" class="text-8xl font-black italic tracking-tighter"></div>
-                    <div id="vVerdict" class="text-sm text-gray-500 italic mt-4 px-10"></div>
-                </div>
+        <div class="glass p-8 rounded-[2.5rem]">
+            <h2 class="text-3xl font-black mb-6">AI Vibe Agent</h2>
+            <div class="flex bg-black/50 p-1 rounded-xl mb-6 border border-white/10">
+                <button id="tabC" onclick="tab('coin')" class="flex-1 py-2 rounded-lg bg-base text-xs font-bold uppercase">Memecoin</button>
+                <button id="tabP" onclick="tab('post')" class="flex-1 py-2 rounded-lg text-gray-500 text-xs font-bold uppercase">Post</button>
             </div>
-
-            <div id="audit-section" class="lg:col-span-5 glass p-10 rounded-[3rem] bento-card">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-black tracking-tight mb-1">Base ID Audit</h2>
-                    <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">Reputation Verifier</p>
-                </div>
-
-                <div id="auditInputView" class="space-y-4">
-                    <input id="walletAddr" type="text" placeholder="0x... (Your Wallet)" class="w-full px-6 py-5 rounded-2xl text-sm outline-none border-blue-500/20">
-                    <button onclick="runAudit()" id="auditBtn" class="w-full py-5 rounded-2xl bg-white text-black font-black text-xs uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">Check Rep</button>
-                </div>
-
-                <div id="auditResultView" class="hidden space-y-6">
-                    <div class="py-12 bg-blue-600/10 rounded-[2.5rem] border border-blue-500/20 text-center">
-                        <div id="finalRep" class="text-8xl font-black italic">0</div>
-                        <div class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mt-2">Global Rep Score</div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-black/40 p-6 rounded-2xl border border-white/5 text-center">
-                            <div id="finalTx" class="text-2xl font-black">0</div>
-                            <div class="text-[8px] text-gray-500 font-bold uppercase">Transactions</div>
-                        </div>
-                        <div class="bg-black/40 p-6 rounded-2xl border border-white/5 text-center">
-                            <div id="finalRank" class="text-lg font-black text-blue-400">-</div>
-                            <div class="text-[8px] text-gray-500 font-bold uppercase">Based Rank</div>
-                        </div>
-                    </div>
-                    <button onclick="location.reload()" class="w-full py-4 text-[9px] font-bold text-gray-500 uppercase tracking-[0.3em]">New Audit</button>
-                </div>
+            <div id="cIn" class="space-y-4">
+                <input id="mName" type="text" placeholder="Token Name" class="w-full p-4 rounded-xl outline-none">
+                <input id="mTick" type="text" placeholder="Ticker" class="w-full p-4 rounded-xl outline-none">
+            </div>
+            <div id="pIn" class="hidden">
+                <textarea id="pText" placeholder="Paste alpha here..." class="w-full p-4 rounded-xl h-32 resize-none outline-none"></textarea>
+            </div>
+            <button onclick="checkVibe()" id="vBtn" class="w-full bg-base py-5 rounded-xl font-black uppercase tracking-widest mt-6 hover:scale-[1.02] transition-all shadow-lg">Analyze Vibe</button>
+            <div id="vResult" class="mt-8 text-center hidden">
+                <div id="vScore" class="text-7xl font-black italic base-blue">0</div>
+                <div class="text-sm text-gray-400 mt-2 font-bold italic">VIBE STATUS: ANALYZED 🔵</div>
             </div>
         </div>
-    </section>
 
-    <footer class="py-20 text-center opacity-30">
-        <p class="text-[9px] font-bold uppercase tracking-[0.5em]">Built on Base. Managed by AI. 2026.</p>
-    </footer>
+        <div class="glass p-8 rounded-[2.5rem]">
+            <h2 class="text-3xl font-black mb-2">ID Audit</h2>
+            <p class="text-[10px] text-blue-400 uppercase font-bold mb-6 tracking-widest">Real-time Node Verification</p>
+
+            <div id="auditMain">
+                <input id="wAddr" type="text" placeholder="0x... (Base Wallet Address)" class="w-full p-4 rounded-xl outline-none mb-4">
+                <button onclick="auditWithViem()" id="aBtn" class="w-full bg-white text-black py-5 rounded-xl font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">Verify Rep</button>
+            </div>
+
+            <div id="auditDisplay" class="hidden space-y-4 mt-4 text-center">
+                <div class="bg-blue-600/20 p-8 rounded-3xl border border-blue-500/30">
+                    <div id="rScore" class="text-7xl font-black">--</div>
+                    <div class="text-[10px] font-bold uppercase text-blue-400 mt-2">Based Rep Score</div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-black/50 p-4 rounded-2xl border border-white/5">
+                        <div id="rTx" class="text-xl font-bold">0</div>
+                        <div class="text-[8px] text-gray-500 uppercase">Nonce (Txs)</div>
+                    </div>
+                    <div id="rRank" class="bg-black/50 p-4 rounded-2xl border border-white/5 text-blue-400 font-bold uppercase text-xs flex items-center justify-center">NEWBIE</div>
+                </div>
+                <button onclick="location.reload()" class="text-[10px] font-bold text-gray-600 uppercase">Clear Audit</button>
+            </div>
+        </div>
+
+    </div>
 
     <script>
-        const API_KEY = '6XBGG5FFG78GHFANMCUK24YFDWDTZ9FINE';
-
-        // TAB SYSTEM
-        function switchTab(type) {
-            const isCoin = type === 'coin';
-            document.getElementById("coinTab").className = `flex-1 py-3 text-[9px] font-bold uppercase rounded-xl transition-all ${isCoin ? 'bg-blue-600 text-white' : 'text-gray-500'}`;
-            document.getElementById("postTab").className = `flex-1 py-3 text-[9px] font-bold uppercase rounded-xl transition-all ${!isCoin ? 'bg-blue-600 text-white' : 'text-gray-500'}`;
-            document.getElementById("coinInputs").classList.toggle("hidden", !isCoin);
-            document.getElementById("postInputs").classList.toggle("hidden", isCoin);
+        // Tab logic
+        window.tab = function(t) {
+            const isC = t === 'coin';
+            document.getElementById('tabC').className = `flex-1 py-2 rounded-lg text-xs font-bold uppercase ${isC ? 'bg-base text-white' : 'text-gray-500'}`;
+            document.getElementById('tabP').className = `flex-1 py-2 rounded-lg text-xs font-bold uppercase ${!isC ? 'bg-base text-white' : 'text-gray-500'}`;
+            document.getElementById('cIn').classList.toggle('hidden', !isC);
+            document.getElementById('pIn').classList.toggle('hidden', isC);
         }
 
-        // VIBE CHECKER LOGIC
-        function analyzeVibe() {
-            const isCoin = !document.getElementById("coinInputs").classList.contains("hidden");
-            const name = document.getElementById("memeName").value.trim();
-            const tick = document.getElementById("memeTicker").value.trim();
-            const post = document.getElementById("postText").value.trim();
+        // Vibe logic with Bubbles
+        window.checkVibe = function() {
+            const isC = !document.getElementById('cIn').classList.contains('hidden');
+            const n = document.getElementById('mName').value.trim();
+            const t = document.getElementById('mTick').value.trim();
+            const p = document.getElementById('pText').value.trim();
 
-            // 1. Validation check
-            if ((isCoin && (!name || !tick)) || (!isCoin && !post)) {
+            if ((isC && (!n || !t)) || (!isC && !p)) {
                 alert("Don't be dumb... That shit is empty.");
                 return;
             }
 
-            // 2. Duplicate Check
-            const uniqueID = isCoin ? `v_${name}_${tick}` : `v_${post.substring(0, 15)}`;
-            if (localStorage.getItem(uniqueID)) {
+            const id = isC ? `v_${n}_${t}` : `v_${p.substring(0,10)}`;
+            if(localStorage.getItem(id)) {
                 alert("WEIRDO... ALREADY TRIED THAT 👀🔵");
                 return;
             }
-            localStorage.setItem(uniqueID, "true");
+            localStorage.setItem(id, "done");
 
-            // 3. UI Animation
-            document.getElementById("vibeBtn").classList.add("hidden");
-            document.getElementById("vibeScan").classList.remove("hidden");
-            
-            let p = 0;
-            const bar = document.getElementById("vibeBar");
-            const timer = setInterval(() => {
-                p += 5;
-                bar.style.width = p + "%";
-                document.getElementById("vibePercent").innerText = p + "%";
+            const btn = document.getElementById('vBtn');
+            btn.innerText = "QUERYING L2...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.classList.add('hidden');
+                document.getElementById('vResult').classList.remove('hidden');
+                document.getElementById('vScore').innerText = Math.floor(Math.random() * 20) + 79;
                 
-                if (p >= 100) {
-                    clearInterval(timer);
-                    renderVibeResult();
-                    // Explosion Effect
-                    for(let i=0; i<15; i++) setTimeout(spawnBubble, i * 100);
+                for(let i=0; i<15; i++) {
+                    setTimeout(spawnBubble, i * 100);
                 }
-            }, 40);
-        }
-
-        function renderVibeResult() {
-            document.getElementById("vibeScan").classList.add("hidden");
-            document.getElementById("vibeBtn").classList.remove("hidden");
-            
-            const score = Math.floor(Math.random() * 40) + 60;
-            document.getElementById("vScore").innerText = score;
-            document.getElementById("vVerdict").innerText = score > 90 ? "CRITICAL ALPHA: Jesse Pollak might actually follow you after this. 🔵" : "BASED ENERGY: High-tier sentiment detected on the L2 layer.";
+            }, 1200);
         }
 
         function spawnBubble() {
             const container = document.getElementById('bubble-container');
             const b = document.createElement('div');
-            b.className = 'based-bubble';
+            b.className = 'based-bubble shadow-lg shadow-blue-500/50';
             b.innerText = 'BASED 🔵';
-            b.style.left = (Math.random() * 60 + 20) + '%';
-            b.style.top = '70%';
+            b.style.left = (Math.random() * 80 + 10) + '%';
+            b.style.bottom = '20%';
             container.appendChild(b);
             setTimeout(() => b.remove(), 1200);
         }
 
-        // AUDIT LOGIC
-        async function runAudit() {
-            const addr = document.getElementById('walletAddr').value.trim();
-            const btn = document.getElementById('auditBtn');
-
+        // --- THE VIEM REPLACEMENT ---
+        window.auditWithViem = async function() {
+            const addr = document.getElementById('wAddr').value.trim();
+            const btn = document.getElementById('aBtn');
+            
             if (!addr.startsWith('0x') || addr.length !== 42) {
-                alert("Invalid wallet address, anon.");
+                alert("Enter a valid Base address, anon.");
                 return;
             }
 
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> SCANNING BASE...';
+            btn.innerHTML = "FETCHING NONCE...";
 
             try {
-                // Using Proxy to bypass compiler CORS
-                const proxy = "https://cors-anywhere.herokuapp.com/";
-                const url = `https://api.basescan.org/api?module=account&action=txlist&address=${addr}&sort=asc&apikey=${API_KEY}`;
+                // Viem getTransactionCount returns the 'Nonce' (total outgoing transactions)
+                // This works without an API Key and without CORS errors
+                const transactionCount = await window.client.getTransactionCount({
+                    address: addr
+                });
+
+                document.getElementById('auditMain').classList.add('hidden');
+                document.getElementById('auditDisplay').classList.remove('hidden');
                 
-                const response = await fetch(proxy + url);
-                const data = await response.json();
+                document.getElementById('rTx').innerText = transactionCount;
+                
+                // Scoring Logic
+                let score = 0;
+                let rank = "NEWBIE";
+                
+                if (transactionCount > 500) { score = 99; rank = "BASE GOD"; }
+                else if (transactionCount > 100) { score = 88; rank = "GIGA BASED"; }
+                else if (transactionCount > 20) { score = 65; rank = "CITIZEN"; }
+                else { score = 30; rank = "EXPLORER"; }
 
-                if (data.status === "1" || data.message.includes("No transactions")) {
-                    const count = data.result && Array.isArray(data.result) ? data.result.length : 0;
-                    showAudit(count);
-                } else {
-                    alert("BaseScan says: " + data.result);
-                    btn.disabled = false;
-                    btn.innerText = "Check Rep";
-                }
-            } catch (e) {
-                alert("Please click the 'Unlock API' link in the nav first!");
+                document.getElementById('rScore').innerText = score;
+                document.getElementById('rRank').innerText = rank;
+
+            } catch (err) {
+                console.error(err);
+                alert("Connection to Base RPC failed. Check your internet.");
                 btn.disabled = false;
-                btn.innerText = "Check Rep";
+                btn.innerText = "Verify Rep";
             }
-        }
-
-        function showAudit(txs) {
-            document.getElementById('auditInputView').classList.add('hidden');
-            document.getElementById('auditResultView').classList.remove('hidden');
-            
-            const score = Math.min(Math.floor(txs / 5) + 20, 99);
-            const rank = txs > 200 ? "GIGA BASED" : txs > 50 ? "CITIZEN" : "NEWBIE";
-            
-            document.getElementById('finalRep').innerText = score;
-            document.getElementById('finalTx').innerText = txs;
-            document.getElementById('finalRank').innerText = rank;
         }
     </script>
 </body>
-            </html>
+</html>
